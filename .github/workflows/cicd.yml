@@ -1,0 +1,30 @@
+name: frontend
+
+on:
+  push:
+   branches:
+     - main
+
+jobs:
+  build:
+   runs-on: ubuntu-latest
+   steps:
+    - name: Checkout Source
+      uses: actions/checkout@v4
+    - name: Login to Docker Hub
+      run: docker login -u ${{ secrets.DOCKER_USR }} -p ${{ secrets.DOCKER_PSWD }}
+    - name: Build Docker Image
+      run: docker build -t ravindramohith/e_shop_frontend .
+    - name: Publish to DockerHUB
+      run: docker push ravindramohith/e_shop_frontend:latest
+
+  deploy:
+   needs: build
+   runs-on: self-hosted
+   steps:
+     - name: Pull image from DockerHUB
+       run: docker pull ravindramohith/e_shop_frontend:latest
+     - name: Remove existing container
+       run: docker stop reactjs-container && docker rm reactjs-container
+     - name: Run docker container
+       run: docker run -d -p 3000:80 --name reactjs-container ravindramohith/e_shop_frontend:latest
