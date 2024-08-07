@@ -25,6 +25,6 @@ jobs:
      - name: Pull image from DockerHUB
        run: docker pull ravindramohith/e_shop_frontend:latest
      - name: Remove existing container
-       run: docker stop reactjs-container && docker rm reactjs-container
+       run: docker rm -f reactjs-container
      - name: Run docker container
        run: docker run -d -p 3000:80 --name reactjs-container ravindramohith/e_shop_frontend:latest
